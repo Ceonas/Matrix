@@ -521,7 +521,7 @@ Matrix						Matrix::eigenValues_JakobiRotation()
                 }
             }
         }
-        std::cout << X << std::endl;
+        //std::cout << X << std::endl;
         if (std::abs(X(l, m)) < eps)
         {
             Matrix answ(n, 1);

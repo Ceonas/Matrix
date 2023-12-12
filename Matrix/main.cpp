@@ -3,7 +3,7 @@
 
 int main()
 {
-	const int N = 3;
+	const int N = 15;
 	Matrix A(N, N);
 	for (int i = 0; i < N; i++)
 	{
