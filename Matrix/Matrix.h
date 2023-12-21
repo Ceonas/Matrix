@@ -38,12 +38,13 @@ public:
 	Matrix								inverse() const;
 	Matrix								transpon() const;
 
-	static std::pair<Matrix, Matrix>	getCanon(const Matrix&, const Matrix&);
+	static std::pair<Matrix, Matrix>	getCanon(Matrix&, const Matrix&);
 	static Matrix						solve_Gauss(const Matrix&, const Matrix&);					//all
 	static Matrix						solve_Thomas(const Matrix&, const Matrix&);					//threediag
 	static Matrix						solve_Jakobi(const Matrix&, const Matrix&);					//StrictDiagonal
 	static Matrix						solve_GaussZeidel(const Matrix&, const Matrix&);			//StrictDiagonal
 	static Matrix						solve_Relax(const Matrix&, const Matrix&, const double&);	//StrictDiagonal
+	static Matrix						solve_contractingMapping(Matrix&, const Matrix&);			//All
 	Matrix								eigenValues_JakobiRotation();								//Simetr
 	std::vector<Matrix>					eigenVectors_JakobiRotation();								//Simetr
 	double								maxEigenValue_PowerMethod();								//Simetr

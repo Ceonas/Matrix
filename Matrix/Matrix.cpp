@@ -1,6 +1,6 @@
 #include "Matrix.h"
 
-const double eps = 0.000001;
+const double eps = 0.0001;
 const double k_max = 100000;
 
 Matrix::Matrix()
@@ -329,13 +329,19 @@ Matrix                      Matrix::inverse() const
     return stemp * (1 / temp(n - 1, n - 1));
 }
 
-std::pair<Matrix, Matrix>   Matrix::getCanon(const Matrix& A, const Matrix& f)
+std::pair<Matrix, Matrix>   Matrix::getCanon(Matrix& A, const Matrix& b)
 {
     int n = A.rows;
-    Matrix B(n, n), g(n, 1);
-    B = A.transpon() * A;
-    g = A.transpon() * f;
-    return std::make_pair(B, g);
+    Matrix c(n, n), d(n, 1), E(n, n);
+    for (int i = 0; i < n; i++)
+    {
+        E(i, i) = 1;
+    }
+    double  l = (A.transpon() * A).Matrix::maxEigenValue_PowerMethod();
+    c = (E - A.transpon() * A * (1.0f / l));
+    d = A.transpon() * b * (1.0f / l);
+    
+    return std::make_pair(c, d);
 }
 Matrix			            Matrix::solve_Gauss(const Matrix& A, const Matrix& b)
 {
@@ -496,6 +502,27 @@ Matrix                      Matrix::solve_Relax(const Matrix& A, const Matrix& b
     } while (((X - tX).cub_norma() > eps) && (k != k_max));
 
     std::cout << "Stopping method at the " << k << " iterartion with eps " << (X - tX).cub_norma() << " (needs: " << eps << ")\n";
+    return X;
+}
+Matrix                      Matrix::solve_contractingMapping(Matrix& A, const Matrix& b)
+{
+    int n = A.rows;
+    std::pair<Matrix, Matrix> cd = Matrix::getCanon(A, b);
+    Matrix X(n, 1);
+    for (int i = 0; i < n; i++)
+    {
+        X(i, 0) = 1;
+    }
+
+    Matrix tX = X;
+    int k = 0;
+    do
+    {
+        X = cd.first * tX + cd.second;
+        std::swap(X, tX);
+        k++;
+    } while ((X.cub_norma()/(1-X.cub_norma())*(tX - X).cub_norma() > eps) && (k != k_max));
+    std::cout << "Stopping method at the " << k << " iterartion\n";
     return X;
 }
 Matrix						Matrix::eigenValues_JakobiRotation()

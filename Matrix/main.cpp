@@ -3,48 +3,20 @@
 
 int main()
 {
-	const int N = 15;
-	Matrix A(N, N);
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j <= i; j++)
-		{
-			if (i == j)
-			{
-				A(i, j) = i + 1;
-			}
-			else
-			{
-				A(i, j) = i;
-				A(j, i) = i;
-			}
-		}
-	}
+	const int N = 4;
+	Matrix A(N, N), b(N, 1);
+	A(0, 0) = 1;	A(0, 1) = -5;	A(0, 2) = 1;	A(0, 3) = 2;	b(0, 0) = 32;
+	A(1, 0) = -16;	A(1, 1) = -3;	A(1, 2) = 5;	A(1, 3) = -4;	b(1, 0) = -74;
+	A(2, 0) = 2;	A(2, 1) = -1;	A(2, 2) = 3;	A(2, 3) = -10;	b(2, 0) = 0;
+	A(3, 0) = -1;	A(3, 1) = 20;	A(3, 2) = 12;	A(3, 3) = 0;	b(3, 0) = -6;
+
+	std::pair<Matrix, Matrix> cd = Matrix::getCanon(A, b);
 
 	setlocale(LC_ALL, "RU");
 	std::cout
 		<< "Матрица А\n" << A
-		<< "Собственные значения:\n	";
-	Matrix l = A.eigenValues_JakobiRotation();
-	std::cout
-		<< l << "Сообственные вектора:\n";
-
-	std::vector<Matrix> vect = A.eigenVectors_JakobiRotation();
-	for (int i = 0; i < N; i++)
-	{
-		std::cout
-			<< vect[i] << "===="
-			<< ((A * vect[i]) - (vect[i]) * l(i, 0)).cub_norma() << "====\n\n";
-	}
-
-	std::cout
-		<< "Максимальное собственное значение:\n";
-	double la = A.maxEigenValue_PowerMethod();
-	std::cout
-		<< la
-		<< "\nМаксимальный собственный вектор:\n";
-	Matrix v = A.maxEigenVector_PowerMethod();
-	std::cout
-		<< v << "===="
-		<< ((A * v) - (v * la)).cub_norma() << "====\n\n";
+		<< "Матрица B\n" << b
+		<< "Матрица С\n" << cd.first
+		<< "Матрица D\n" << cd.second
+		<< "Матрица X\n" << Matrix::solve_contractingMapping(A, b);
 }
